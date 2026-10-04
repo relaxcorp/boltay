@@ -44,6 +44,9 @@ jobs:
     needs: check
     if: needs.check.outputs.published != 'true'
     uses: ./.github/workflows/build.yml
+    # The macOS job signs with the certificate from the secrets, a called workflow gets
+    # none unless passed on.
+    secrets: inherit
     with:
       version: ${{ inputs.version || github.ref_name }}
 
