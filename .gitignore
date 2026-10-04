@@ -1,0 +1,7 @@
+/target
+/models
+node_modules
+dist
+app/src-tauri/gen
+.DS_Store
+*.onnx

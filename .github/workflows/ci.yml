@@ -1,0 +1,71 @@
+name: ci
+
+# Everything reaches main through a pull request, so checking pull requests is enough.
+on:
+  workflow_dispatch:
+  pull_request:
+    paths-ignore: ['docs/**', '**/*.md']
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    env:
+      # fetch-models.sh and the checksum step call the API signed in: anonymous calls share
+      # the runner's rate limit.
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      # The models, the build and the archives of their caches outgrow the runner's disk.
+      - run: sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: dtolnay/rust-toolchain@89b12181fb390509a0842a86cc55eeb8eb928c1d # stable
+        with:
+          toolchain: stable
+          components: rustfmt, clippy
+      - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+      - run: ./scripts/linux-deps.sh
+
+      - run: cargo fmt --all --check
+      - run: npm ci
+        working-directory: app
+      - run: npm run check
+        working-directory: app
+      # The app embeds the built frontend at compile time.
+      - run: npm run build
+        working-directory: app
+      - run: cargo clippy --workspace --all-targets -- -D warnings
+      # The notices ship in every package: a new or updated dependency must be in them.
+      - uses: taiki-e/install-action@83ac0ad63c0167e6f06796fab0fce28db1bf3db0 # v2
+        with:
+          tool: cargo-about@0.9.2
+      - run: ./scripts/notices.sh && git diff --exit-code THIRD_PARTY_NOTICES.md
+
+      # The checksum list names every model file, so it keys the cache before the download.
+      - name: Fetch model checksums
+        run: |
+          mkdir -p models
+          url=$(curl -fsSL -H "Authorization: Bearer $GITHUB_TOKEN" \
+            "https://api.github.com/repos/${{ github.repository }}/releases/tags/models-v1" |
+            jq -r '.assets[] | select(.name == "SHA256SUMS") | .url')
+          curl -fsSL -H "Authorization: Bearer $GITHUB_TOKEN" -H "Accept: application/octet-stream" \
+            -o models/SHA256SUMS "$url"
+      - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        with:
+          path: models
+          key: models-${{ hashFiles('models/SHA256SUMS') }}
+      - run: ./scripts/fetch-models.sh
+
+      - run: cargo test --workspace

@@ -1,0 +1,15 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/boltay-core",
+    "crates/boltay-text",
+    "crates/boltay-translate",
+    "crates/boltay-cli",
+    "app/src-tauri",
+]
+
+[workspace.package]
+version = "0.9.0"
+edition = "2021"
+license = "MIT"
+repository = "https://github.com/relaxcorp/boltay"

@@ -1,0 +1,81 @@
+name: release
+
+# A tag v* builds every package and puts them into a draft release, to be checked and
+# published by hand. By hand it builds the version given and drafts its release too.
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Version, like 0.9.0
+        required: true
+
+concurrency:
+  group: release-${{ github.ref }}
+
+# The builds run the build scripts of hundreds of crates and npm packages: only the job
+# that drafts the release may write.
+permissions:
+  contents: read
+
+env:
+  GH_TOKEN: ${{ github.token }}
+  VERSION: ${{ inputs.version || github.ref_name }}
+
+jobs:
+  check:
+    # Publishing a draft made by hand creates its tag, and the tag starts this workflow
+    # again. A version already out is not built twice.
+    runs-on: ubuntu-latest
+    outputs:
+      published: ${{ steps.release.outputs.published }}
+    steps:
+      - id: release
+        run: |
+          v=${VERSION#v}
+          draft=$(gh release view "v$v" --repo "$GITHUB_REPOSITORY" --json isDraft --jq .isDraft 2>/dev/null || true)
+          if [ "$draft" = false ]; then
+            echo "::notice::v$v is already published"
+            echo published=true >> "$GITHUB_OUTPUT"
+          fi
+
+  build:
+    needs: check
+    if: needs.check.outputs.published != 'true'
+    uses: ./.github/workflows/build.yml
+    with:
+      version: ${{ inputs.version || github.ref_name }}
+
+  draft:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          pattern: boltay-*
+          path: built
+      - name: Name the files
+        run: |
+          v=${VERSION#v}
+          mkdir out
+          cp built/boltay-windows/*.exe "out/Boltay_${v}_x64-setup.exe"
+          cp built/boltay-linux/appimage/*.AppImage "out/Boltay_${v}_amd64.AppImage"
+          cp built/boltay-linux/deb/*.deb "out/Boltay_${v}_amd64.deb"
+          cp built/boltay-macos/*.dmg "out/Boltay_${v}_aarch64.dmg"
+          (cd out && sha256sum * > SHA256SUMS && cat SHA256SUMS)
+      - name: Draft the release
+        run: |
+          v=${VERSION#v}
+          # A rerun fills the draft it made before instead of making a second one.
+          if [ "$(gh release view "v$v" --repo "$GITHUB_REPOSITORY" --json isDraft --jq .isDraft 2>/dev/null)" = true ]; then
+            gh release upload "v$v" out/* --repo "$GITHUB_REPOSITORY" --clobber
+            exit
+          fi
+          # A pre-release must not become the latest one the app offers as an update.
+          pre=()
+          case $v in *-*) pre=(--prerelease) ;; esac
+          gh release create "v$v" out/* --repo "$GITHUB_REPOSITORY" --draft "${pre[@]}" \
+            --target "$GITHUB_SHA" --title "Boltay $v" --notes ""

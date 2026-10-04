@@ -1,0 +1,23 @@
+[package]
+name = "boltay-cli"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[[bin]]
+name = "boltay"
+path = "src/main.rs"
+
+[dependencies]
+anyhow = "1"
+boltay-core = { path = "../boltay-core" }
+boltay-text = { path = "../boltay-text" }
+boltay-translate = { path = "../boltay-translate" }
+clap = { version = "4.6", features = ["derive", "env"] }
+serde_json = "1"
+
+[target.'cfg(unix)'.dependencies]
+libc = "0.2"
+
+[target.'cfg(windows)'.dependencies]
+windows-sys = { version = "0.61", features = ["Win32_System_ProcessStatus", "Win32_System_Threading"] }

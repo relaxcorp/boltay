@@ -1,0 +1,12 @@
+{
+  "bundle": {
+    "resources": {
+      "../../target/onnxruntime/lib/libonnxruntime.so.1": "ort/libonnxruntime.so.1"
+    },
+    "linux": {
+      "deb": {
+        "depends": ["libasound2", "libxdo3", "ca-certificates"]
+      }
+    }
+  }
+}

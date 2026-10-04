@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+  <defs>
+    <clipPath id="shell"><path d="M16 0C22.18 0 28 9.41 28 17.54C28 25.66 22.6 32 16 32C9.4 32 4 25.66 4 17.54C4 9.41 9.82 0 16 0Z"/></clipPath>
+  </defs>
+  <path d="M16 1.5C21.41 1.5 26.5 10.03 26.5 17.4C26.5 24.75 21.78 30.5 16 30.5C10.22 30.5 5.5 24.75 5.5 17.4C5.5 10.03 10.59 1.5 16 1.5Z" fill="#2a201b" stroke="#2a201b" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M16 1.5C21.41 1.5 26.5 10.03 26.5 17.4C26.5 24.75 21.78 30.5 16 30.5C10.22 30.5 5.5 24.75 5.5 17.4C5.5 10.03 10.59 1.5 16 1.5Z" fill="#f7f2eb"/>
+  <path clip-path="url(#shell)" d="M2.35 16 8.65 16 11.8 9.04 19.78 22.96 22.93 16 29.65 16" fill="none" stroke="#ff5c48" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+</svg>

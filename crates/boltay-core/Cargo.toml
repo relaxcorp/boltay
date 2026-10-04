@@ -1,0 +1,21 @@
+[package]
+name = "boltay-core"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+boltay-text = { path = "../boltay-text" }
+boltay-translate = { path = "../boltay-translate" }
+ort = { version = "=2.0.0-rc.13", default-features = false, features = ["std", "download-binaries", "copy-dylibs", "tls-native"] }
+dirs = "7"
+num_cpus = "1.17"
+realfft = "3.5"
+rubato = "5.0"
+symphonia = { version = "0.6.1", default-features = false, features = ["opt-simd", "wav", "pcm", "adpcm", "ogg", "vorbis", "flac", "mp3", "isomp4", "aac"] }
+opus = "0.4"
+serde = { version = "1", features = ["derive"] }
+sha2 = "0.11"
+log = "0.4"
+thiserror = "2"
+ureq = { version = "3.4", default-features = false, features = ["rustls", "platform-verifier", "json"] }
