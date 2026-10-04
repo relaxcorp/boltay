@@ -40,6 +40,7 @@ jobs:
       - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2
       - if: inputs.version
         run: node scripts/set-version.mjs "$VERSION"
+        shell: bash
         env:
           VERSION: ${{ inputs.version }}
       - run: npm ci
@@ -73,6 +74,7 @@ jobs:
       - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2
       - if: inputs.version
         run: node scripts/set-version.mjs "$VERSION"
+        shell: bash
         env:
           VERSION: ${{ inputs.version }}
       - run: ./scripts/linux-deps.sh
@@ -141,6 +143,7 @@ jobs:
       - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2
       - if: inputs.version
         run: node scripts/set-version.mjs "$VERSION"
+        shell: bash
         env:
           VERSION: ${{ inputs.version }}
       - run: npm ci
