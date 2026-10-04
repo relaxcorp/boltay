@@ -55,6 +55,6 @@ cd app && npm ci && npx tauri build
 
 ## Лицензия
 
-Код — MIT. У моделей свои лицензии (MIT, CC-BY-4.0, Apache-2.0), всё, на чём собран Boltay, перечислено в [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+Код — MIT. У моделей свои лицензии (MIT, CC-BY-4.0, Apache-2.0), всё, на чём собран Boltay, перечислено в [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md). Что приложение отправляет в сеть и как подписываются релизы — в [CODE_SIGNING.md](CODE_SIGNING.md).
 
 Сделано в [Relax Lab](https://relaxlab.net) · [Telegram](https://t.me/relaxdev)

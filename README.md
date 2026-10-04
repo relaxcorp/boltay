@@ -55,6 +55,6 @@ cd app && npm ci && npx tauri build
 
 ## License
 
-MIT for the code. The models keep their own licenses (MIT, CC-BY-4.0, Apache-2.0); everything Boltay is built on is listed in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+MIT for the code. The models keep their own licenses (MIT, CC-BY-4.0, Apache-2.0); everything Boltay is built on is listed in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md). What the app sends over the network and how releases are signed: [CODE_SIGNING.md](CODE_SIGNING.md).
 
 Made by [Relax Lab](https://relaxlab.net) · [Telegram](https://t.me/relaxdev)
