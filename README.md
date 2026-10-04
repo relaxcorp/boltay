@@ -15,6 +15,24 @@ Voice dictation for Russian and English that runs on your own computer. Hold a h
 - **Voice messages and recordings to text.** Drop a file on the window: Telegram voice messages (ogg/opus), mp3, m4a, wav, flac, up to four hours long.
 - **History** of what you dictated, if you want it, kept locally and pruned on schedule.
 
+## How it looks
+
+**Text you don't have to fix:** what was said, and what got pasted.
+
+<img src="docs/clean.gif" alt="Raw speech next to the cleaned text" width="900">
+
+**Speak Russian, paste English.**
+
+<img src="docs/translate.gif" alt="Russian speech pasted as English" width="900">
+
+**Translator on the selection.**
+
+<img src="docs/translator.gif" alt="The translator plate next to selected text" width="900">
+
+**Voice messages to text.**
+
+<img src="docs/voice.gif" alt="A Telegram voice message transcribed" width="900">
+
 ## Download
 
 From [Releases](https://github.com/relaxcorp/boltay/releases/latest):
